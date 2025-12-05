@@ -3,58 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crypto Rush — Трейдинг-симулятор</title>
+  <title>Neon Trader — Crypto Rush</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>Crypto Rush</h1>
-    <p>Симулятор трейдинга | Начальный баланс: 1000 $</p>
+    <header>
+      <h1>⚡ Neon <span>Trader</span></h1>
+      <p>Симулятор трейдинга в реальном времени</p>
+    </header>
 
-    <div class="dashboard">
-      <div>Баланс: <strong id="balance">1000.00 $</strong></div>
-      <div>
-        Плечо: 
-        <select id="leverage">
+    <section class="dashboard">
+      <div class="balance-card">
+        <p>Баланс</p>
+        <h2><span id="balance">1000.00</span> $</h2>
+      </div>
+      <div class="leverage-control">
+        <label>Плечо:</label>
+        <select id="leverageSelect" onchange="setLev()">
           <option value="1">1x</option>
           <option value="5">5x</option>
           <option value="10">10x</option>
           <option value="25">25x</option>
         </select>
       </div>
-      <div>Актив: <strong id="asset">BTC/USDT</strong></div>
-    </div>
+    </section>
 
-    <canvas id="priceChart" height="200"></canvas>
+    <section class="market">
+      <div class="currency-tabs">
+        <button class="tab-btn active" data-currency="BTC/USDT">BTC/USDT</button>
+        <button class="tab-btn" data-currency="ETH/USDT">ETH/USDT</button>
+        <button class="tab-btn" data-currency="SOL/USDT">SOL/USDT</button>
+      </div>
+      <div class="price-display">
+        <h3>Цена: <span id="currentPrice">60000</span> $</h3>
+      </div>
+      <canvas id="priceChart"></canvas>
+    </section>
 
-    <div class="controls">
-      <button id="btnLong">Long</button>
-      <button id="btnShort">Short</button>
-      <button id="btnClose">Закрыть сделку</button>
-    </div>
+    <section class="trading-actions">
+      <button id="btn-long" onclick="openTrade('Long')">🟢 LONG</button>
+      <button id="btn-short" onclick="openTrade('Short')">🔴 SHORT</button>
+      <button id="btn-close" onclick="closeTrade()">⏹️ Закрыть</button>
+    </section>
 
-    <div class="position" id="positionInfo">
-      Нет открытой позиции
-    </div>
+    <section class="position-status">
+      <p>Позиция: <span id="openPosition">—</span></p>
+    </section>
 
-    <details>
-      <summary>История сделок</summary>
-      <table id="historyTable">
-        <thead><tr><th>Тип</th><th>Актив</th><th>Цена</th><th>Результат</th></tr></thead>
-        <tbody></tbody>
+    <section class="history">
+      <h3>История сделок</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Тип</th>
+            <th>Монета</th>
+            <th>Вход</th>
+            <th>Выход</th>
+            <th>Прибыль</th>
+          </tr>
+        </thead>
+        <tbody id="tradeHistoryBody"></tbody>
       </table>
-    </details>
-
-    <details>
-      <summary>Рейтинг игроков</summary>
-      <table id="leaderboard">
-        <thead><tr><th>Место</th><th>Имя</th><th>Баланс</th><th>Дата</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </details>
+    </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
