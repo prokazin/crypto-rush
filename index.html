@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto Rush — Трейдинг-симулятор</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Crypto Rush</h1>
+    <p>Симулятор трейдинга | Начальный баланс: 1000 $</p>
+
+    <div class="dashboard">
+      <div>Баланс: <strong id="balance">1000.00 $</strong></div>
+      <div>
+        Плечо: 
+        <select id="leverage">
+          <option value="1">1x</option>
+          <option value="5">5x</option>
+          <option value="10">10x</option>
+          <option value="25">25x</option>
+        </select>
+      </div>
+      <div>Актив: <strong id="asset">BTC/USDT</strong></div>
+    </div>
+
+    <canvas id="priceChart" height="200"></canvas>
+
+    <div class="controls">
+      <button id="btnLong">Long</button>
+      <button id="btnShort">Short</button>
+      <button id="btnClose">Закрыть сделку</button>
+    </div>
+
+    <div class="position" id="positionInfo">
+      Нет открытой позиции
+    </div>
+
+    <details>
+      <summary>История сделок</summary>
+      <table id="historyTable">
+        <thead><tr><th>Тип</th><th>Актив</th><th>Цена</th><th>Результат</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+
+    <details>
+      <summary>Рейтинг игроков</summary>
+      <table id="leaderboard">
+        <thead><tr><th>Место</th><th>Имя</th><th>Баланс</th><th>Дата</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
