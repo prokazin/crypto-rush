@@ -1,75 +1,209 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Neon Trader — Crypto Rush</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trading Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>⚡ Neon <span>Trader</span></h1>
-      <p>Симулятор трейдинга в реальном времени</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>Crypto Trading Simulator</h1>
+            </div>
+            <div class="user-info">
+                <div class="balance-box">
+                    <span class="label">Баланс:</span>
+                    <span class="value" id="balance">1000.00</span>
+                    <span class="currency">USDT</span>
+                </div>
+                <div class="leverage-box">
+                    <span class="label">Плечо:</span>
+                    <select id="leverageSelect" onchange="setLev()">
+                        <option value="1">1x</option>
+                        <option value="2">2x</option>
+                        <option value="3" selected>3x</option>
+                        <option value="5">5x</option>
+                        <option value="10">10x</option>
+                        <option value="20">20x</option>
+                    </select>
+                </div>
+            </div>
+        </header>
 
-    <section class="dashboard">
-      <div class="balance-card">
-        <p>Баланс</p>
-        <h2><span id="balance">1000.00</span> $</h2>
-      </div>
-      <div class="leverage-control">
-        <label>Плечо:</label>
-        <select id="leverageSelect" onchange="setLev()">
-          <option value="1">1x</option>
-          <option value="5">5x</option>
-          <option value="10">10x</option>
-          <option value="25">25x</option>
-        </select>
-      </div>
-    </section>
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-bar"></i> График цены</h2>
+                        <div class="timeframe-selector">
+                            <button class="timeframe-btn active">Live</button>
+                            <button class="timeframe-btn">15м</button>
+                            <button class="timeframe-btn">1ч</button>
+                            <button class="timeframe-btn">4ч</button>
+                        </div>
+                    </div>
+                    <canvas id="priceChart"></canvas>
+                </div>
 
-    <section class="market">
-      <div class="currency-tabs">
-        <button class="tab-btn active" data-currency="BTC/USDT">BTC/USDT</button>
-        <button class="tab-btn" data-currency="ETH/USDT">ETH/USDT</button>
-        <button class="tab-btn" data-currency="SOL/USDT">SOL/USDT</button>
-      </div>
-      <div class="price-display">
-        <h3>Цена: <span id="currentPrice">60000</span> $</h3>
-      </div>
-      <canvas id="priceChart"></canvas>
-    </section>
+                <div class="trading-pair-selector">
+                    <h3><i class="fas fa-coins"></i> Торговые пары</h3>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-currency="BTC/USDT" onclick="changeCurrency('BTC/USDT')">
+                            <i class="fab fa-bitcoin"></i> BTC/USDT
+                        </button>
+                        <button class="tab-btn" data-currency="ETH/USDT" onclick="changeCurrency('ETH/USDT')">
+                            <i class="fab fa-ethereum"></i> ETH/USDT
+                        </button>
+                        <button class="tab-btn" data-currency="SOL/USDT" onclick="changeCurrency('SOL/USDT')">
+                            <i class="fas fa-fire"></i> SOL/USDT
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-    <section class="trading-actions">
-      <button id="btn-long" onclick="openTrade('Long')">🟢 LONG</button>
-      <button id="btn-short" onclick="openTrade('Short')">🔴 SHORT</button>
-      <button id="btn-close" onclick="closeTrade()">⏹️ Закрыть</button>
-    </section>
+            <div class="right-panel">
+                <div class="trading-widget">
+                    <div class="widget-header">
+                        <h2><i class="fas fa-exchange-alt"></i> Торговля</h2>
+                        <div class="current-price">
+                            <span class="label">Текущая цена:</span>
+                            <span class="price" id="currentPrice">60000.00</span>
+                            <span class="currency">USDT</span>
+                        </div>
+                    </div>
 
-    <section class="position-status">
-      <p>Позиция: <span id="openPosition">—</span></p>
-    </section>
+                    <div class="trade-buttons">
+                        <button class="btn-long" onclick="openTrade('Long')">
+                            <i class="fas fa-arrow-up"></i> LONG
+                        </button>
+                        <button class="btn-short" onclick="openTrade('Short')">
+                            <i class="fas fa-arrow-down"></i> SHORT
+                        </button>
+                        <button class="btn-close" id="btn-close" onclick="closeTrade()">
+                            <i class="fas fa-times"></i> ЗАКРЫТЬ
+                        </button>
+                    </div>
 
-    <section class="history">
-      <h3>История сделок</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Тип</th>
-            <th>Монета</th>
-            <th>Вход</th>
-            <th>Выход</th>
-            <th>Прибыль</th>
-          </tr>
-        </thead>
-        <tbody id="tradeHistoryBody"></tbody>
-      </table>
-    </section>
-  </div>
+                    <div class="position-info">
+                        <h3><i class="fas fa-bullseye"></i> Открытая позиция</h3>
+                        <div class="position-details" id="openPosition">
+                            —
+                        </div>
+                    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
+                    <div class="risk-management">
+                        <h3><i class="fas fa-shield-alt"></i> Риск-менеджмент</h3>
+                        <div class="risk-inputs">
+                            <div class="input-group">
+                                <label for="stopLossInput"><i class="fas fa-arrow-down"></i> Stop Loss %</label>
+                                <input type="number" id="stopLossInput" min="0" max="100" step="0.1" placeholder="0.0">
+                            </div>
+                            <div class="input-group">
+                                <label for="takeProfitInput"><i class="fas fa-arrow-up"></i> Take Profit %</label>
+                                <input type="number" id="takeProfitInput" min="0" max="100" step="0.1" placeholder="0.0">
+                            </div>
+                            <button class="btn-set" onclick="setStopLossTakeProfit()">
+                                <i class="fas fa-check"></i> Установить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-widget">
+                    <div class="history-header">
+                        <h3><i class="fas fa-history"></i> История сделок</h3>
+                        <button class="btn-clear" onclick="clearHistory()">
+                            <i class="fas fa-trash"></i> Очистить
+                        </button>
+                    </div>
+                    <div class="history-table-container">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Тип</th>
+                                    <th>Пара</th>
+                                    <th>Вход</th>
+                                    <th>Выход</th>
+                                    <th>Прибыль</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradeHistoryBody">
+                                <!-- История будет заполняться через JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-panel">
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Всего сделок:</span>
+                    <span class="stat-value" id="totalTrades">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Успешных:</span>
+                    <span class="stat-value win" id="winRate">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Общая прибыль:</span>
+                    <span class="stat-value" id="totalProfit">0.00 USDT</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-reset" onclick="resetAccount()">
+                    <i class="fas fa-redo"></i> Сбросить аккаунт
+                </button>
+                <label class="sound-toggle">
+                    <input type="checkbox" id="soundToggle" onchange="toggleSound()" checked>
+                    <span class="toggle-slider"></span>
+                    <i class="fas fa-volume-up"></i> Звук
+                </label>
+                <button class="btn-help" onclick="showHelp()">
+                    <i class="fas fa-question-circle"></i> Помощь
+                </button>
+            </div>
+        </div>
+
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <div class="help-modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-question-circle"></i> Как торговать</h2>
+                <button class="modal-close" onclick="closeHelp()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3><i class="fas fa-play"></i> Начало работы</h3>
+                    <p>1. Выберите торговую пару (BTC/USDT, ETH/USDT или SOL/USDT)</p>
+                    <p>2. Установите размер плеча (от 1x до 20x)</p>
+                    <p>3. Нажмите LONG для покупки или SHORT для продажи</p>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-chart-line"></i> График</h3>
+                    <p>• График обновляется в реальном времени</p>
+                    <p>• Цены генерируются с разной волатильностью</p>
+                    <p>• BTC: низкая волатильность, SOL: высокая волатильность</p>
+                </div>
+                <div class="help-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Риски</h3>
+                    <p>• Высокое плечо увеличивает как прибыль, так и убытки</p>
+                    <p>• Используйте Stop Loss для ограничения убытков</p>
+                    <p>• Начинайте с маленького плеча</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
